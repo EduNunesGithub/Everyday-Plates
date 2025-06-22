@@ -14,7 +14,8 @@ export default collection({
         banner: fields.image({
           directory: "public/keystatic/images/page-home",
           label: "Banner",
-          publicPath: "keystatic/images/page-home",
+          publicPath: "/keystatic/images/page-home",
+          validation: { isRequired: true },
         }),
         description: fields.text({
           label: "Description",

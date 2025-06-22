@@ -8,7 +8,7 @@ const Page = async () => {
     <main>
       <ul>
         {recipes.map(({ slug, entry }) => (
-          <li>
+          <li key={slug}>
             <Link href={`/recipe/${slug}`}>{entry["slug-title"]}</Link>
           </li>
         ))}
