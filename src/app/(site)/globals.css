@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-sm: 30rem;
+  --breakpoint-md: 60rem;
+  --color-brandy-red: #854632;
+  --color-dark-charcoal: #312e2c;
+  --color-dark-raspberry: #7a284e;
+  --color-eggshell: #f3e5d7;
+  --color-snow: #fff7fb;
+  --color-wenge-brown: #5f564d;
+  --color-white-coffee: #e3ddd7;
+  --font-a-bee-zee: --font-a-bee-zee;
+  --font-outfit: --font-outfit;
+  --spacing-43: 10.75rem;
+  --spacing-75: 18.75rem;
+  --spacing-150: 37.5rem;
+  --spacing-185: 46.25rem;
+  --text-h3: 1.25rem;
+}
+
+@layer base {
+  body {
+    @apply bg-eggshell;
+  }
+}
+
+@layer components {
+  h1,
+  .h1 {
+    @apply font-a-bee-zee font-normal text-4xl w-full;
+    @apply sm:text-[2.5rem] sm:leading-none;
+  }
+
+  h2,
+  .h2 {
+    @apply font-a-bee-zee font-normal text-[1.75rem] leading-[1.24] w-full;
+  }
+
+  h3,
+  .h3 {
+    @apply font-outfit font-semibold text-xl w-full;
+  }
+
+  ol {
+    counter-reset: list;
+  }
+
+  ol li,
+  ol .li {
+    counter-increment: list;
+    @apply auto-rows-min grid grid-cols-[minmax(2.5rem,_min-content)_1fr] items-start w-full;
+    @apply before:content-[counter(list)_'.'] before:font-bold before:font-outfit before:ml-2 before:text-base before:text-brandy-red;
+  }
+
+  strong {
+    @apply font-bold;
+  }
+
+  table {
+    @apply border-collapse font-normal font-outfit text-base w-full;
+  }
+
+  table tbody tr {
+    @apply border-b-[0.0625rem] border-b-white-coffee;
+    @apply last:border-b-0;
+  }
+
+  table tr td {
+    @apply px-2 py-3;
+    @apply first:pl-8;
+    @apply last:pr-8;
+  }
+
+  table tr:first-child td {
+    @apply pt-0;
+  }
+
+  table tr:last-child td {
+    @apply pb-0;
+  }
+
+  ul li,
+  ul .li {
+    @apply auto-rows-min grid grid-cols-[minmax(2.5rem,_min-content)_1fr] items-center w-full;
+    @apply before:bg-dark-raspberry before:flex before:h-1 before:ml-2 before:rounded-full before:w-1;
+  }
+
+  p,
+  li,
+  .p,
+  .li {
+    @apply font-outfit font-normal text-base w-full;
+  }
+}
