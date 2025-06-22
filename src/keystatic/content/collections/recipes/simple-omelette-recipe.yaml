@@ -1,6 +1,5 @@
 slug-title: Simple Omelette Recipe
 section-header:
-  banner: keystatic/images/page-home/simple-omelette-recipe/section-header/banner.jpeg
   description: >-
     An easy and quick dish, perfect for any meal. This classic omelette combines
     beaten eggs cooked to perfection, optionally filled with your choice of
@@ -19,7 +18,7 @@ section-ingredients:
     - Salt, to taste
     - Pepper, to taste
     - 1 tablespoon of butter or oil
-    - 'Optional fillings: cheese, diced vegetables, cooked meats, herbs'
+    - "Optional fillings: cheese, diced vegetables, cooked meats, herbs"
 section-instructions:
   instructions:
     - name: Beat the eggs
