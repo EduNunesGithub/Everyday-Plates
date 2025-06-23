@@ -1,5 +1,4 @@
 import { collection, fields } from "@keystatic/core";
-import slugify from "slugify";
 
 export default collection({
   label: "Recipes",

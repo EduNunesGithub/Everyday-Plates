@@ -1,14 +1,45 @@
+import React from "react";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
-import { reader } from "@/keystatic/reader";
+import { Ingredients } from "@/components/ingredients";
+import { Instructions } from "@/components/instructions";
+import { Nutrition } from "@/components/nutrition";
+import { PreparationTime } from "@/components/preparation-time";
+import { listRecipe, readRecipe } from "@/keystatic/cached/recipes";
+
+export const revalidate = 600;
+
+export async function generateMetadata({
+  params,
+}: PageProps["|recipe|${slug}"]): Promise<Metadata> {
+  const slug = (await params).slug;
+  const recipe = await readRecipe(slug);
+
+  if (!recipe) return {};
+
+  return {
+    description: recipe["section-header"].description,
+    title: `Recipe | ${recipe["slug-title"]}`,
+  };
+}
+
+export async function generateStaticParams(): Promise<
+  Awaited<PageProps["|recipe|${slug}"]["params"]>[]
+> {
+  const recipes = await listRecipe();
+  if (!recipes) return [];
+  return recipes.map((recipe) => ({
+    slug: recipe,
+  }));
+}
 
 const Page = async (props: PageProps["|recipe|${slug}"]) => {
   const slug = (await props.params).slug;
-  const recipe = await reader.collections.collectionsRecipe.read(slug, {
-    resolveLinkedFiles: true,
-  });
+  const recipe = await readRecipe(slug);
 
-  if (!recipe) throw new Error();
+  if (!recipe) return notFound();
 
   return (
     <main
@@ -34,6 +65,7 @@ const Page = async (props: PageProps["|recipe|${slug}"]) => {
             alt=""
             className="object-cover"
             fill
+            loading="eager"
             sizes="(min-width: 0px) 100vw"
             src={recipe["section-header"].banner}
           />
@@ -48,49 +80,11 @@ const Page = async (props: PageProps["|recipe|${slug}"]) => {
         </p>
 
         {recipe["section-preparation-time"].times.length !== 0 && (
-          <div
-            className={twMerge(
-              "auto-rows-min bg-snow gap-4 grid grid-cols-1 mb-8 p-6 rounded-xl w-[calc(100%-4rem)]",
-              "sm:w-full",
-            )}
-          >
-            <h2 className="h3 text-dark-raspberry">Preparation time</h2>
-
-            <ul className="auto-rows-min gap-2 grid grid-cols-1 w-full">
-              {recipe["section-preparation-time"].times.map(
-                ({ name, value }, index) => (
-                  <li className="text-wenge-brown w-full" key={index}>
-                    <div className="inline-block w-full">
-                      <span>{name}:</span> {value}
-                    </div>
-                  </li>
-                ),
-              )}
-            </ul>
-          </div>
+          <PreparationTime recipe={recipe} />
         )}
 
         {recipe["section-ingredients"].ingredients.length !== 0 && (
-          <>
-            <h2 className={twMerge("mb-6 px-8 text-brandy-red", "sm:px-0")}>
-              Ingredients
-            </h2>
-
-            <ul
-              className={twMerge(
-                "auto-rows-min gap-2 grid grid-cols-1 mb-8 px-8 text-wenge-brown w-full",
-                "sm:px-0",
-              )}
-            >
-              {recipe["section-ingredients"].ingredients.map(
-                (ingredient, index) => (
-                  <li key={index}>
-                    <div className="inline-block w-full">{ingredient}</div>
-                  </li>
-                ),
-              )}
-            </ul>
-          </>
+          <Ingredients recipe={recipe} />
         )}
 
         <div
@@ -101,28 +95,7 @@ const Page = async (props: PageProps["|recipe|${slug}"]) => {
         />
 
         {recipe["section-instructions"].instructions.length !== 0 && (
-          <>
-            <h2 className={twMerge("mb-6 px-8 text-brandy-red", "sm:px-0")}>
-              Instructions
-            </h2>
-
-            <ol
-              className={twMerge(
-                "auto-rows-min gap-2 grid grid-cols-1 mb-8 px-8 text-wenge-brown w-full",
-                "sm:px-0",
-              )}
-            >
-              {recipe["section-instructions"].instructions.map(
-                ({ name, value }, index) => (
-                  <li key={index}>
-                    <div className="inline-block w-full">
-                      <strong>{name}:</strong> {value}
-                    </div>
-                  </li>
-                ),
-              )}
-            </ol>
-          </>
+          <Instructions recipe={recipe} />
         )}
 
         <div
@@ -133,45 +106,7 @@ const Page = async (props: PageProps["|recipe|${slug}"]) => {
         />
 
         {recipe["section-nutrition"].nutrition.length !== 0 && (
-          <>
-            <h2 className={twMerge("mb-6 px-8 text-brandy-red", "sm:px-0")}>
-              Nutrition
-            </h2>
-
-            <p className={twMerge("mb-6 px-8 text-wenge-brown", "sm:px-0")}>
-              {recipe["section-nutrition"].description}
-            </p>
-
-            <div
-              className={twMerge(
-                "auto-rows-min grid grid-cols-1 overflow-x-auto w-[calc(100%-4rem)]",
-                "sm:w-full",
-              )}
-            >
-              <table className="relative">
-                <thead className="absolute h-0 overflow-hidden opacity-0 w-0">
-                  <tr>
-                    <th>Informação Nutricional</th>
-                    <th>Quantidade</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recipe["section-nutrition"].nutrition.map(
-                    ({ name, value }, index) => (
-                      <tr key={index}>
-                        <td className="text-wenge-brown">
-                          <span className="flex shrink-0 w-full">{name}</span>
-                        </td>
-                        <td className="font-bold text-brandy-red">
-                          <span className="flex shrink-0 w-full">{value}</span>
-                        </td>
-                      </tr>
-                    ),
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </>
+          <Nutrition recipe={recipe} />
         )}
       </article>
     </main>
