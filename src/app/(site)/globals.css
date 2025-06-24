@@ -12,7 +12,9 @@
   --color-white-coffee: #e3ddd7;
   --font-a-bee-zee: --font-a-bee-zee;
   --font-outfit: --font-outfit;
+  --spacing-21: 5.25rem;
   --spacing-43: 10.75rem;
+  --spacing-50: 12.5rem;
   --spacing-75: 18.75rem;
   --spacing-150: 37.5rem;
   --spacing-185: 46.25rem;
@@ -86,8 +88,10 @@
     @apply before:bg-dark-raspberry before:flex before:h-1 before:ml-2 before:rounded-full before:w-1;
   }
 
+  a,
   p,
   li,
+  .a,
   .p,
   .li {
     @apply font-outfit font-normal text-base w-full;

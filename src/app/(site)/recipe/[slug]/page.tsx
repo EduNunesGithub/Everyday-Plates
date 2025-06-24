@@ -2,6 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { Ingredients } from "@/components/ingredients";
 import { Instructions } from "@/components/instructions";
@@ -16,12 +17,10 @@ export async function generateMetadata({
 }: PageProps["|recipe|${slug}"]): Promise<Metadata> {
   const slug = (await params).slug;
   const recipe = await readRecipe(slug);
-
   if (!recipe) return {};
-
   return {
     description: recipe["section-header"].description,
-    title: `Recipe | ${recipe["slug-title"]}`,
+    title: `Everyday Plates | ${recipe["slug-title"]}`,
   };
 }
 
@@ -38,6 +37,7 @@ export async function generateStaticParams(): Promise<
 const Page = async (props: PageProps["|recipe|${slug}"]) => {
   const slug = (await props.params).slug;
   const recipe = await readRecipe(slug);
+  const recipes = await listRecipe();
 
   if (!recipe) return notFound();
 
@@ -50,11 +50,24 @@ const Page = async (props: PageProps["|recipe|${slug}"]) => {
     >
       <article
         className={twMerge(
-          "auto-rows-min bg-white grid grid-cols-1 pb-8 overflow-hidden place-items-center text-left w-full",
+          "auto-rows-min bg-white grid grid-cols-1 pb-8 place-items-center relative text-left w-full z-0",
           "sm:max-w-150 sm:p-10 sm:rounded-3xl",
           "md:max-w-185",
         )}
       >
+        {recipes.length >= 2 && (
+          <Link
+            className={twMerge(
+              "bg-white duration-200 ease-in-out fixed flex items-center left-8 min-h-10 px-4 py-1 rounded-xl shadow-md text-center top-8 w-fit z-10",
+              "sm:absolute sm:left-0 sm:-top-21",
+              "hover:brightness-75",
+            )}
+            href="/"
+          >
+            Home
+          </Link>
+        )}
+
         <div
           className={twMerge(
             "h-43 mb-10 overflow-hidden relative w-full",
@@ -66,6 +79,7 @@ const Page = async (props: PageProps["|recipe|${slug}"]) => {
             className="object-cover"
             fill
             loading="eager"
+            priority
             sizes="(min-width: 0px) 100vw"
             src={recipe["section-header"].banner}
           />
